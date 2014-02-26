@@ -1,0 +1,58 @@
+
+% Solve the 1-D wave equation subject to
+% fixed boundary condition on right
+% moving boundary condition on left
+% -------------------------------------------
+
+clear all
+close all
+clc
+
+nFrames = 400;                % number of frames in the movie (time!)
+
+c      = 1;                   % set physical parameters
+deltaT = 0.02;
+deltaX = 0.02;
+deltaY = deltaX;
+lamb   = (c*deltaT/deltaX)^2;
+
+xRight = 5;
+yRight = 5;
+x = linspace(0, xRight, (xRight/deltaX +1) ); 
+y = linspace(0, yRight, (yRight/deltaY +1) );% calculate x node locations
+n = length(x);
+m = length(y);
+
+
+uInit = zeros(n,m);         
+uCur = uInit;
+uFut = uCur;
+
+[x,y] = meshgrid(0:0.2:5, 0:0.2:5);
+drawnow
+
+                  % set spatial boundary values
+for j = 2 : m -1
+uCur(1,j) = leftBoundary(1, deltaT);
+for i = 2 : n-1                 % calculate the first time-step
+    uCur(i,j) = ( lamb*(uInit(i-1,j)+uInit(i) + (2-2*lamb)*uInit(i) +  ) / 2;
+end
+
+
+
+
+
+uFut(1) = 0;
+uFut(length(x)) = 0;
+                               % and the rest of the time steps...
+for k = 2 : nFrames
+      uFut(1) = leftBoundary(k, deltaT);
+      for i = 2 : (length(x)-1)
+          uFut(i) = ( lamb*uCur(i-1) + (2-2*lamb)*uCur(i) + lamb*uCur(i+1) - uInit(i));
+      end
+     
+
+      uInit = uCur;            % update u values
+      uCur = uFut;
+end
+
